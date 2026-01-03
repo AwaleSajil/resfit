@@ -29,7 +29,7 @@ The main motivation behind this project was to solve a common problem with exist
 ```mermaid
 graph TD
     User([User]) -->|Uploads PDF & Job Desc| UI[Streamlit UI]
-    UI -->|Selects Provider| LLM[LLM Client\n(Gemini/Claude/OpenAI)]
+    UI -->|Selects Provider| LLM["LLM Client\n(Gemini/Claude/OpenAI)"]
     UI -->|Starts| Pipeline[ResumeTailorPipeline]
 
     subgraph "Input Processing"
