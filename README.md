@@ -27,35 +27,101 @@ The main motivation behind this project was to solve a common problem with exist
 ## 🏗️ Architecture
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#E1F5FE',
+    'primaryTextColor': '#01579B',
+    'lineColor': '#546E7A',
+    'clusterBkg': '#FAFAFA',
+    'clusterBorder': '#CFD8DC'
+  },
+  'flowchart': {
+    'curve': 'linear',
+    'nodeSpacing': 50,
+    'rankSpacing': 60
+  }
+}}%%
+
 graph TD
-    User([User]) -->|Uploads PDF & Job Desc| UI[Streamlit UI]
-    UI -->|Selects Provider| LLM["LLM Client\n(Gemini/Claude/OpenAI)"]
-    UI -->|Starts| Pipeline[ResumeTailorPipeline]
 
-    subgraph "Input Processing"
-        Pipeline -->|PyMuPDF4LLM| Parser[Resume Parser]
-        Pipeline -->|Scraper| JD[Job Description Processor]
-    end
+    %% === STYLING DEFINITIONS ===
+    classDef user fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,rx:10;
+    classDef ui fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,rx:5;
+    classDef ai fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,rx:10;
+    classDef process fill:#ffffff,stroke:#78909c,stroke-width:2px,rx:5;
+    classDef data fill:#e1bee7,stroke:#8e24aa,stroke-width:2px,shape:cylinder;
+    classDef output fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,rx:5;
 
-    subgraph "AI Orchestration (Async)"
-        Parser & JD -->|Context| Extractor[Data Extractor]
-        Extractor -->|Structured Data| Planner[Section Planner]
-        Planner -->|Distribute| Workers{Async Workers}
+    %% === THE DIAGRAM ===
+
+    %% 1. USER INTERFACE LAYER
+    subgraph UI_Layer ["🖥️ Frontend / Interface"]
+        User([👤 User]):::user
+        Streamlit[/"💻 Streamlit UI"/]:::ui
+        LLM["🧠 LLM Provider<br/>(OpenAI / Gemini / Claude)"]:::ui
         
-        Workers -->|Tailor| S1[Summary]
-        Workers -->|Tailor| S2[Experience]
-        Workers -->|Tailor| S3[Skills]
-        Workers -->|Tailor| S4[Projects]
+        User -->|Uploads Files| Streamlit
+        Streamlit -.->|Configures| LLM
     end
 
-    subgraph "Generation"
-        S1 & S2 & S3 & S4 -->|Merge| Context[Jinja2 Context]
-        Context -->|Render| Template[LaTeX Template]
-        Template -->|pdflatex| Compiler[PDF Compiler]
+    %% 2. THE PIPELINE (BACKEND)
+    subgraph Backend ["⚙️ ResumeTailor Pipeline"]
+
+        %% Phase 1: Ingestion
+        subgraph P1 ["Phase 1: Input Processing"]
+            Parser["📄 Resume Parser<br/>(PyMuPDF4LLM)"]:::process
+            Scraper["🌐 Job Scraper<br/>(Web Engine)"]:::process
+        end
+
+        %% Phase 2: Understanding
+        subgraph P2 ["Phase 2: AI Orchestration"]
+            Extractor{{"🤖 Data Extractor"}}:::ai
+            Planner["📝 Section Planner"]:::process
+            
+            %% Connecting P1 to P2
+            Parser --> Extractor
+            Scraper --> Extractor
+            Extractor --> Planner
+        end
+
+        %% Phase 3: Writing
+        subgraph P3 ["Phase 3: Parallel Writing"]
+            Workers{{"⚡ Async Workers"}}:::ai
+            
+            S1["📝 Summary"]:::process
+            S2["💼 Experience"]:::process
+            S3["🛠️ Skills"]:::process
+            S4["🚀 Projects"]:::process
+
+            Planner --> Workers
+            Workers --> S1
+            Workers --> S2
+            Workers --> S3
+            Workers --> S4
+        end
+
+        %% Phase 4: Assembly
+        subgraph P4 ["Phase 4: Generation"]
+            Merger["🔗 Jinja2 Merger"]:::process
+            Compiler["⚙️ PDF Compiler<br/>(LaTeX)"]:::process
+            
+            S1 --> Merger
+            S2 --> Merger
+            S3 --> Merger
+            S4 --> Merger
+            Merger --> Compiler
+        end
     end
 
-    Compiler -->|Returns| Artifacts[(PDF & .tex Files)]
-    Artifacts -->|Download| UI
+    %% 3. OUTPUT
+    Result([📄 Final PDF]):::output
+
+    %% === CROSS CONNECTIONS ===
+    Streamlit --> Parser
+    Streamlit --> Scraper
+    
+    Compiler --> Result
 ```
 
 ## 📋 Prerequisites
