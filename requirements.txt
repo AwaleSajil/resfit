@@ -1,0 +1,15 @@
+google-genai
+anthropic
+openai
+streamlit>=1.28.0
+instructor>=1.0.0
+instructor[google-genai]
+google-cloud-aiplatform
+pymupdf4llm
+diskcache
+beautifulsoup4
+requests
+trafilatura
+undetected-chromedriver
+jinja2
+python-dotenv

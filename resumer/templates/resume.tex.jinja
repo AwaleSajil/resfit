@@ -1,0 +1,266 @@
+% -------------------------
+% Resume in Latex
+% License : MIT
+% ------------------------
+
+\documentclass[letterpaper,10.8pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[pdftex]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\definecolor{dblue}{HTML}{003900}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=dblue,
+    filecolor=dblue,      
+    urlcolor=dblue,
+    }
+
+\definecolor{defaulttextcolor}{HTML}{030303}
+\color{defaulttextcolor}
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.375in}
+\addtolength{\evensidemargin}{-0.375in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1in}
+
+\urlstyle{rm}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-3pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% -------------------------
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item\small{
+    \textbf{#1}{: #2 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeItemWithoutTitle}[1]{
+  \item\small{
+    {\vspace{-2pt}}
+  }
+}
+
+\iffalse
+\newcommand{\resumeSubheading}[5]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+      \ifx&#5&%
+        % If the 5th argument is empty, do nothing
+      \else
+        \textit{\scriptsize #5} & \\ % Add the row only if argument exists
+      \fi
+    \end{tabular*}\vspace{-5pt}
+}
+\fi
+
+\newcommand{\resumeSubheading}[5]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      % Only render this row if #3 OR #4 have content
+      \ifx&#3&\ifx&#4&\else
+        \textit{\small#3} & \textit{\small #4} \\
+      \fi\else
+        \textit{\small#3} & \textit{\small #4} \\
+      \fi
+      % Only render this row if #5 has content
+      \ifx&#5&\else
+        \textit{\scriptsize #5} & \\
+      \fi
+    \end{tabular*}\vspace{-6pt} % Slightly increased negative space here
+}
+
+
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+\renewcommand{\labelitemii}{$\circ$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+% -------------------------------------------
+%%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\textbf{{\LARGE \VAR{richtext_to_latex(personal_info.name)}}}
+% ----------HEADING-----------------
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+  {Address: \VAR{richtext_to_latex(personal_info.location)}} &
+  {Portfolio: \href{\VAR{personal_info.media.portfolio}}{\VAR{personal_info.media.portfolio}}} \\
+  {Email: \VAR{richtext_to_latex(personal_info.email)}} &
+  {Github: \href{\VAR{personal_info.media.github}}{\VAR{personal_info.media.github}}} \\
+  {Mobile: \VAR{richtext_to_latex(personal_info.phone)}} &
+  {Linkedin: \href{\VAR{personal_info.media.linkedin}}{\VAR{personal_info.media.linkedin}}} \\
+\end{tabular*}
+
+% -----------SUMMARY-----------------
+
+\BLOCK{ if summary }
+\section{Summary}
+  \VAR{richtext_to_latex(summary)}
+\BLOCK{ endif }
+
+% -----------EDUCATION-----------------
+\BLOCK{ if education and len(education) > 0 }
+\section{Education}
+  \resumeSubHeadingListStart
+  \BLOCK{ for edu in education }
+    \resumeSubheading
+      {\VAR{richtext_to_latex(edu.university)}}{\BLOCK{ if edu.location }\VAR{richtext_to_latex(edu.location)} \BLOCK{ endif } }
+      {\VAR{richtext_to_latex(edu.degree)}}{\VAR{richtext_to_latex(edu.date_description)}}
+      {\BLOCK{ if edu.grade }\VAR{richtext_to_latex(edu.grade)}\BLOCK{ endif }} % Now passed as the 5th argument
+  \BLOCK{ endfor }
+  \resumeSubHeadingListEnd
+\BLOCK{ endif }
+
+% -----------SKILLS-----------
+\BLOCK{ if skill_sections and len(skill_sections) > 0 }
+\section{Skills}
+    \resumeSubHeadingListStart
+        \BLOCK{ for skill_group in skill_sections }
+            \resumeSubItem{\VAR{richtext_to_latex(skill_group.name)}}{\BLOCK{ for sk in skill_group.skills }\VAR{richtext_to_latex(sk)}\BLOCK{ if not loop.last }, \BLOCK{ endif }\BLOCK{ endfor }}
+        \BLOCK{ endfor }
+    \resumeSubHeadingListEnd
+\BLOCK{ endif }
+
+
+% -----------EXPERIENCE-----------
+\BLOCK{ if work_experience and len(work_experience) > 0 }
+\section{Experience}
+  \resumeSubHeadingListStart
+  \BLOCK{ for exp in work_experience }
+    \resumeSubheading
+      {\VAR{richtext_to_latex(exp.role)}}{\BLOCK{ if exp.location }\VAR{richtext_to_latex(exp.location)} \BLOCK{ endif }}
+      {\VAR{richtext_to_latex(exp.company)}}{\VAR{richtext_to_latex(exp.date_description)}}
+      {}
+      \resumeItemListStart
+        \BLOCK{ for item in exp.description }
+        \item{\VAR{richtext_to_latex(item)}}
+        \BLOCK{ endfor }
+      \resumeItemListEnd
+  \BLOCK{ endfor }
+  \resumeSubHeadingListEnd
+\BLOCK{ endif }
+
+
+% -----------PROJECTS-----------
+\BLOCK{ if projects and len(projects) > 0 }
+\section{Projects}
+    \resumeSubHeadingListStart
+    \BLOCK{ for proj in projects }
+      \resumeSubheading
+          {\VAR{richtext_to_latex(proj.name)}}{}
+          {\BLOCK{ if proj.type }\VAR{richtext_to_latex(proj.type)} \BLOCK{ endif }}{\VAR{richtext_to_latex(proj.date_description)}}
+          {}
+      \resumeItemListStart
+        \BLOCK{ for desc in proj.description }
+            \item{\VAR{richtext_to_latex(desc)}}
+        \BLOCK{ endfor }
+      \resumeItemListEnd
+    \BLOCK{ endfor }
+    \resumeSubHeadingListEnd
+\BLOCK{ endif }
+
+% -----------ACHIEVEMENTS-----------
+\BLOCK{ if achievements and len(achievements) > 0 }
+\section{Honors and Awards}
+\resumeSubHeadingListStart
+\BLOCK{ for ach in achievements }
+    \resumeSubheading
+        {\VAR{richtext_to_latex(ach.name)}}{}
+        {\VAR{richtext_to_latex(ach.issued_by)}}{\VAR{richtext_to_latex(ach.date)}}
+        {}
+        \resumeItemListStart
+            \BLOCK{ for desc in ach.description }
+            \item{\VAR{richtext_to_latex(desc)}}
+            \BLOCK{ endfor }
+        \resumeItemListEnd
+\BLOCK{ endfor }
+\resumeSubHeadingListEnd
+\BLOCK{ endif }
+
+% -----------CERTIFICATIONS-----------
+\BLOCK{ if certifications and len(certifications) > 0 }
+\section{Certifications}
+\begin{description}[font=$\bullet$]
+\BLOCK{ for cert in certifications }
+    \item{\VAR{richtext_to_latex(cert.certificate_info)}} \BLOCK{ if cert.date }\hfill \VAR{richtext_to_latex(cert.date)}\BLOCK{ endif }
+\BLOCK{ endfor }
+\end{description}
+\BLOCK{ endif }
+
+
+% -----------RESEARCH WORKS-----------
+\BLOCK{ if research_works and len(research_works) > 0 }
+\section{Research Works}
+\resumeSubHeadingListStart
+\BLOCK{ for research_work in research_works }
+    \resumeSubheading
+        {\VAR{richtext_to_latex(research_work.name)}, \VAR{richtext_to_latex(research_work.publication)}}{}
+        {\VAR{richtext_to_latex(research_work.link)}}{\VAR{richtext_to_latex(research_work.date)}}
+        {}
+        \resumeItemListStart
+            \BLOCK{ for desc in research_work.description }
+            \item{\VAR{richtext_to_latex(desc)}}
+            \BLOCK{ endfor }
+        \resumeItemListEnd
+\BLOCK{ endfor }
+\resumeSubHeadingListEnd
+\BLOCK{ endif }
+
+
+% -----------CUSTOM SECTION-----------
+\BLOCK{ if custom_sections and len(custom_sections) > 0 }
+\BLOCK{ for csection_name, csection in custom_sections.items() }
+\section{\VAR{richtext_to_latex(csection_name)}}
+\resumeSubHeadingListStart
+\BLOCK{ for csection_item in csection }
+\resumeSubheading
+    {\VAR{richtext_to_latex(csection_item.title)}}{}
+    {\BLOCK{ if csection_item.subtitle }\VAR{richtext_to_latex(csection_item.subtitle)}\BLOCK{ endif }}{\BLOCK{ if csection_item.date_description }\VAR{richtext_to_latex(csection_item.date_description)}\BLOCK{ endif }}
+    {}
+    \BLOCK{ if csection_item.description }
+    \resumeItemListStart
+        \BLOCK{ for desc in csection_item.description }
+        \item{\VAR{richtext_to_latex(desc)}}
+        \BLOCK{ endfor }
+    \resumeItemListEnd
+    \BLOCK{ endif }
+\BLOCK{ endfor }
+\resumeSubHeadingListEnd
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+
+% -------------------------------------------
+\end{document}
