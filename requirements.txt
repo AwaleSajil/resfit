@@ -1,7 +1,7 @@
 google-genai
 anthropic
 openai
-streamlit>=1.28.0
+streamlit>=1.31.0
 instructor>=1.0.0
 instructor[google-genai]
 google-cloud-aiplatform
@@ -13,3 +13,4 @@ trafilatura
 undetected-chromedriver
 jinja2
 python-dotenv
+streamlit-mermaid

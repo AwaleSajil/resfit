@@ -137,8 +137,8 @@ The easiest way to run the application is using Docker, as it handles the comple
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/resumer.git
-   cd resumer
+   git clone https://github.com/AwaleSajil/resfit
+   cd resfit
    ```
 
 2. **Build and Run**

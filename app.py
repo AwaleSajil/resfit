@@ -1,10 +1,15 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import os
 import tempfile
 import json
+import textwrap
+import re
+import ast
 from typing import Optional
 from pathlib import Path
 import asyncio
+import requests
 
 # API and instructor imports
 import instructor
@@ -122,6 +127,50 @@ def get_openai_instructor_client(api_key: str):
 # ============================================
 # UTILITY FUNCTIONS
 # ============================================
+import base64
+
+import base64
+
+def mermaid_chart(code: str, height: int = 600):
+    """
+    Renders Mermaid.js diagrams in Streamlit by fetching SVG from mermaid.ink.
+    Saves the SVG locally and displays it.
+    """
+    # Clean up code
+    code = textwrap.dedent(code).strip()
+    
+    # Encode to base64
+    graphbytes = code.encode("utf8")
+    base64_bytes = base64.urlsafe_b64encode(graphbytes)
+    base64_string = base64_bytes.decode("ascii")
+    
+    # Construct URL
+    url = f"https://mermaid.ink/svg/{base64_string}"
+    
+    try:
+        # Fetch the SVG
+        response = requests.get(url)
+        if response.status_code == 200:
+            # Display as image
+            st.image(response.text, width="stretch")
+        else:
+            # Fallback: Try without the init block
+            import re
+            code_no_init = re.sub(r'%%\{init:.*?\}%%', '', code, flags=re.DOTALL).strip()
+            graphbytes_fallback = code_no_init.encode("utf8")
+            base64_bytes_fallback = base64.urlsafe_b64encode(graphbytes_fallback)
+            base64_string_fallback = base64_bytes_fallback.decode("ascii")
+            url_fallback = f"https://mermaid.ink/svg/{base64_string_fallback}"
+            
+            response_fallback = requests.get(url_fallback)
+            if response_fallback.status_code == 200:
+                 st.image(response_fallback.text, width="stretch")
+            else:
+                st.error(f"Failed to render diagram (Status: {response.status_code})")
+                st.code(code, language="mermaid")
+    except Exception as e:
+        st.error(f"Error rendering diagram: {str(e)}")
+        st.code(code, language="mermaid")
 
 def log_message(message: str):
     """Add message to processing log"""
@@ -216,7 +265,17 @@ def main():
     with col1:
         st.title("📄 ResFit: Resume Tailor AI")
         st.markdown("*Tailor your resume for any job using AI - **Preserving your Links!***")
-        st.info("💡 **Why ResFit?** Unlike other tools, this app preserves all hyperlinks in your resume (Portfolio, LinkedIn, GitHub, etc.) while tailoring the content.")
+        st.info("💡 **Why ResFit?** Unlike other tools, this app preserves all hyperlinks in your resume while tailoring the content.")
+        
+        with st.expander("🔄 How ResFit Works"):
+            # Read flowchart from file
+            flowchart_path = Path(__file__).parent / "docs" / "flowchart.mmd"
+            if flowchart_path.exists():
+                with open(flowchart_path, "r") as f:
+                    flowchart_code = f.read()
+                mermaid_chart(flowchart_code, height=800)
+            else:
+                st.error(f"Flowchart definition not found at {flowchart_path}")
     
     # ========== SIDEBAR: AUTHENTICATION ==========
     with st.sidebar:
@@ -278,7 +337,7 @@ def main():
         st.divider()
         
         # Authenticate button
-        if st.button("🔓 Authenticate", use_container_width=True, type="primary"):
+        if st.button("🔓 Authenticate", width="stretch", type="primary"):
             if api_key:
                 try:
                     if api_provider == "Gemini":
@@ -308,13 +367,16 @@ def main():
             **Model:** {st.session_state.selected_model}
             """)
             
-            if st.button("🚪 Logout", use_container_width=True):
+            if st.button("🚪 Logout", width="stretch"):
                 st.session_state.authenticated = False
                 st.session_state.api_key = None
                 st.session_state.api_provider = None
                 st.session_state.selected_model = None
                 st.session_state.aclient = None
                 st.rerun()
+
+
+        st.markdown("[![GitHub](https://img.shields.io/badge/GitHub-ResFit-181717?logo=github)](https://github.com/AwaleSajil/resfit)")
     
     # ========== MAIN CONTENT ==========
     if not st.session_state.authenticated:
@@ -434,7 +496,7 @@ def main():
         st.divider()
         
         # Start processing button
-        if st.button("🚀 Generate Tailored Resume", use_container_width=True, type="primary", key="btn_start"):
+        if st.button("🚀 Generate Tailored Resume", width="stretch", type="primary", key="btn_start"):
             # Clear processing log
             st.session_state.processing_log = []
             
@@ -525,7 +587,7 @@ def main():
                     data=st.session_state.resume_bytes,
                     file_name="original_resume.pdf",
                     mime="application/pdf",
-                    use_container_width=True
+                    width="stretch"
                 )
         
         with col2:
@@ -536,7 +598,7 @@ def main():
                     data=st.session_state.tailored_resume_pdf,
                     file_name="tailored_resume.pdf",
                     mime="application/pdf",
-                    use_container_width=True,
+                    width="stretch",
                     type="primary"
                 )
         
@@ -548,7 +610,7 @@ def main():
                     data=st.session_state.tailored_resume_tex.encode('utf-8'),
                     file_name="tailored_resume.tex",
                     mime="text/plain",
-                    use_container_width=True
+                    width="stretch"
                 )
             else:
                 st.info("LaTeX file not available")
