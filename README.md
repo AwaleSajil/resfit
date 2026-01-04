@@ -11,6 +11,8 @@ app_port: 8501
 ---
 # ResFit: Resume Tailor AI 📄
 
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/SajilAwale/resfit)
+
 ResFit is a powerful Streamlit application that leverages advanced Large Language Models (LLMs) to intelligently tailor your resume for specific job descriptions. By analyzing your existing resume and the target job requirements, it rewrites content to highlight relevant skills and experiences, generating a professionally formatted PDF using LaTeX.
 
 **Why ResFit?**
