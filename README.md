@@ -7,6 +7,7 @@ sdk: docker
 pinned: false
 license: apache-2.0
 short_description: AI resume tailor adapts CV to any JD while preserving links.
+app_port: 8501
 ---
 # ResFit: Resume Tailor AI 📄
 
