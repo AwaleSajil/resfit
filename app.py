@@ -20,6 +20,7 @@ from openai import AsyncOpenAI
 # Project imports
 from resumer import ResumeTailorPipeline
 from resumer.utils.latex_ops import json_to_latex_pdf
+from streamlit_pdf_viewer import pdf_viewer
 
 # ============================================
 # PAGE CONFIGURATION
@@ -617,7 +618,7 @@ def main():
         
         st.divider()
         
-        # PDF Preview Section using iframe
+        # PDF Preview Section using streamlit-pdf-viewer
         st.subheader("📄 PDF Preview")
         
         preview_col1, preview_col2 = st.columns(2)
@@ -625,20 +626,14 @@ def main():
         with preview_col1:
             with st.expander("👁️ View Original Resume PDF", expanded=True):
                 if st.session_state.resume_bytes:
-                    import base64
-                    pdf_b64 = base64.b64encode(st.session_state.resume_bytes).decode()
-                    pdf_display = f'<iframe src="data:application/pdf;base64,{pdf_b64}" width="100%" height="600" type="application/pdf"></iframe>'
-                    st.markdown(pdf_display, unsafe_allow_html=True)
+                    pdf_viewer(input=st.session_state.resume_bytes, width=700, height=800)
                 else:
                     st.info("No original resume available")
         
         with preview_col2:
             with st.expander("✨ View Tailored Resume PDF", expanded=True):
                 if "tailored_resume_pdf" in st.session_state:
-                    import base64
-                    pdf_b64 = base64.b64encode(st.session_state.tailored_resume_pdf).decode()
-                    pdf_display = f'<iframe src="data:application/pdf;base64,{pdf_b64}" width="100%" height="600" type="application/pdf"></iframe>'
-                    st.markdown(pdf_display, unsafe_allow_html=True)
+                    pdf_viewer(input=st.session_state.tailored_resume_pdf, width=700, height=800)
                 else:
                     st.info("No tailored resume available")
         

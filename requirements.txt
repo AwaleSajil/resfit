@@ -14,3 +14,4 @@ undetected-chromedriver
 jinja2
 python-dotenv
 streamlit-mermaid
+streamlit-pdf-viewer
