@@ -1,3 +1,13 @@
+---
+title: Resfit
+emoji: 📉
+colorFrom: blue
+colorTo: yellow
+sdk: docker
+pinned: false
+license: apache-2.0
+short_description: AI resume tailor adapts CV to any JD while preserving links.
+---
 # ResFit: Resume Tailor AI 📄
 
 ResFit is a powerful Streamlit application that leverages advanced Large Language Models (LLMs) to intelligently tailor your resume for specific job descriptions. By analyzing your existing resume and the target job requirements, it rewrites content to highlight relevant skills and experiences, generating a professionally formatted PDF using LaTeX.
@@ -216,3 +226,4 @@ MIT License
 ## 🙏 Acknowledgements
 
 This project is inspired by [ResumeFlow](https://github.com/Ztrimus/ResumeFlow) by Ztrimus.
+
